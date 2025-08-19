@@ -1,0 +1,52 @@
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:17
+    environment:
+      POSTGRES_USER: vivran
+      POSTGRES_PASSWORD: admin1
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  pgAdmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin2
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - app-network
+
+#  springboot:
+#    container_name: springboot_app
+#    build: .
+#    depends_on:
+#      - postgres
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/swiftDB?options=-c%20TimeZone=Asia/Kolkata
+#      SPRING_DATASOURCE_USERNAME: vivran
+#      SPRING_DATASOURCE_PASSWORD: admin1
+#      JAVA_TOOL_OPTIONS: -Duser.timezone=Asia/Kolkata  # ✅ JVM timezone override
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
